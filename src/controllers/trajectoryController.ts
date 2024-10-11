@@ -11,32 +11,52 @@ export const getAllTrajectories = async (req: Request, res: Response): Promise<v
        
         const { longitude, latitude, date, taxi_id } = req.query;
        
-        const startDate = date ? new Date(`${date}T00:00:00Z`) : undefined; 
-        const endDate = date ? new Date(`${date}T23:59:59Z`):undefined;
+        //manejo de error de taxi_id
+         if (taxi_id && isNaN(Number(taxi_id))) {
+            res.status(400).json({ error: 'El taxi_id debe ser un número.' });
+            return; // evitar que se siga ejecutando el codigo.
+        }
+        if (!date || isNaN(new Date().getTime())) {
+            res.status(400).json({ error: 'El parámetro date debe ser una fecha válida' });
+            return;
+        }
 
+        //manejo formato fecha
+        if (typeof date !== 'string' || !/^\d{2}-\d{2}-\d{4}$/.test(date)) {
+            res.status(400).json({ error: 'El parámetro date debe estar en formato DD-MM-YYYY' });
+            return;
+        }
+        const [day, month, year] = date.split('-'); // Divide la fecha
+        const startDate = new Date(`${year}-${month}-${day}T00:00:00Z`); // Inicio del día
+        const endDate = new Date(`${year}-${month}-${day}T23:59:59Z`);  
+        const dates = date;
         const trajectories = await prisma.trajectories.findMany({
             where: {
                 // Condiciones de búsqueda
                 longitude: longitude ? Number(longitude) : undefined,
                 latitude: latitude ? Number(latitude) : undefined,
-                //date: date ? new Date(date as string) : undefined, 
                 taxi_id: taxi_id ? Number(taxi_id) : undefined, //este fitro funciona
 
                 date:{
                     gte: startDate,
-                    lte:endDate,
+                    lte: endDate,
                 },
             },
-            select: {
-                id: true,       
-                taxi_id: true,   
-                longitude: true,
-                latitude: true,
-                date: true,     
-            },
+          
+            include: {
+                taxi: true, 
+              },
         });
 
-      res.json({trajectories});
+        res.json(trajectories.map(({ id, date, taxi_id, longitude, latitude, taxi }) => ({
+            id,
+            plate:taxi.plate,
+            date:dates, //`${day}-${month}-${year}`,
+            taxiId:taxi_id,
+            longitude,
+            latitude,
+            
+        })));
     } catch (error) {
         console.error(error);
         if (!res.headersSent){ //verifica q se enviaron los headers al cliente

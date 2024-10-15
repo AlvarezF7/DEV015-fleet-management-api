@@ -16,10 +16,7 @@ export const getAllTrajectories = async (req: Request, res: Response): Promise<v
             res.status(400).json({ error: 'El taxi_id debe ser un número.' });
             return; // evitar que se siga ejecutando el codigo.
         }
-        if (!date || isNaN(new Date().getTime())) {
-            res.status(400).json({ error: 'El parámetro date debe ser una fecha válida' });
-            return;
-        }
+        
 
         //manejo formato fecha
         if (typeof date !== 'string' || !/^\d{2}-\d{2}-\d{4}$/.test(date)) {
@@ -30,6 +27,16 @@ export const getAllTrajectories = async (req: Request, res: Response): Promise<v
         const startDate = new Date(`${year}-${month}-${day}T00:00:00Z`); // Inicio del día
         const endDate = new Date(`${year}-${month}-${day}T23:59:59Z`);  
         const dates = date;
+
+        //verifica si la fecha es valida
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            res.status(400).json({ error: 'Error Fechas no validas' });
+            return;
+        }
+        /* codigo anterios
+        const startDAte = Date ? newDate(`$(date)T00:00:00Z`):undefined;
+        const endDate = Date ? newDate(`$(date)T00:00:00Z`):undefined;*/
+
         const trajectories = await prisma.trajectories.findMany({
             where: {
                 // Condiciones de búsqueda

@@ -1,4 +1,4 @@
-/* by coach en los models van todo lo q tienen q ver con los .prisma */
+/* en los models van todo lo q tienen q ver con los .prisma */
 /*
 import {PrismaClient} from '@prisma/client';
 

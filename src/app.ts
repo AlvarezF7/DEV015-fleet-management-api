@@ -8,7 +8,7 @@ const app: Application = express();
 const prisma = new PrismaClient();
 const PORT: number = 5000;
 
-app.use(express.json());  // para que el servidor entienda las solicitud de datos en formato JSON
+app.use(express.json());  // para que el servidor entienda las solicitud de datos en formato JSON (parsea al jsonbody y permite escucharlo como objeto)
 
 //usar las rutas de ambas tablas
 app.use('/taxis', taxiRoutes);

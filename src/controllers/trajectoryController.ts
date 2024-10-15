@@ -25,7 +25,7 @@ export const getAllTrajectories = async (req: Request, res: Response): Promise<v
         const [day, month, year] = date.split('-'); // Divide la fecha
         const startDate = new Date(`${year}-${month}-${day}T00:00:00Z`); // Inicio del día
         const endDate = new Date(`${year}-${month}-${day}T23:59:59Z`);  
-        const dates = date; /*esta es la q deja la fecha sin hora*/
+        //const dates = date; /*esta es la q deja la fecha sin hora*/
 
         //verifica si la fecha es valida
         if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -49,7 +49,7 @@ export const getAllTrajectories = async (req: Request, res: Response): Promise<v
         res.json(trajectories.map(({ id, date, taxi_id, longitude, latitude, taxi }) => ({
             id,
             plate:taxi.plate,
-            date:dates, //date solito aparece la fecha en formato americano y con hora
+            date, //date solito aparece la fecha en formato americano y con hora
             taxiId:taxi_id,
             longitude,
             latitude,

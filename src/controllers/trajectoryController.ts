@@ -1,8 +1,7 @@
 //el controlador debe manejar la logica de las solicitudes HTTP y obtener los datos 
-
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-
+import {findAllTrajectories} from '../models/trajectoryModel';
 
 const prisma = new PrismaClient();
 
@@ -26,39 +25,31 @@ export const getAllTrajectories = async (req: Request, res: Response): Promise<v
         const [day, month, year] = date.split('-'); // Divide la fecha
         const startDate = new Date(`${year}-${month}-${day}T00:00:00Z`); // Inicio del día
         const endDate = new Date(`${year}-${month}-${day}T23:59:59Z`);  
-        const dates = date;
+        const dates = date; /*esta es la q deja la fecha sin hora*/
 
         //verifica si la fecha es valida
         if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
             res.status(400).json({ error: 'Error Fechas no validas' });
             return;
         }
+
         /* codigo anterios
-        const startDAte = Date ? newDate(`$(date)T00:00:00Z`):undefined;
+        const startDate = Date ? newDate(`$(date)T00:00:00Z`):undefined;
         const endDate = Date ? newDate(`$(date)T00:00:00Z`):undefined;*/
 
-        const trajectories = await prisma.trajectories.findMany({
-            where: {
-                // Condiciones de búsqueda
-                longitude: longitude ? Number(longitude) : undefined,
-                latitude: latitude ? Number(latitude) : undefined,
-                taxi_id: taxi_id ? Number(taxi_id) : undefined, //este fitro funciona
 
-                date:{
-                    gte: startDate,
-                    lte: endDate,
-                },
-            },
-          
-            include: {
-                taxi: true, 
-              },
+        const trajectories = await findAllTrajectories({
+            longitude,
+            latitude,
+            startDate,
+            endDate,
+            taxi_id
         });
-
+     
         res.json(trajectories.map(({ id, date, taxi_id, longitude, latitude, taxi }) => ({
             id,
             plate:taxi.plate,
-            date:dates, //`${day}-${month}-${year}`,
+            date:dates, //date solito aparece la fecha en formato americano y con hora
             taxiId:taxi_id,
             longitude,
             latitude,

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,17 +8,23 @@ datasource db {
 }
 
 model taxis {
-  id          Int           @id @default(autoincrement())
-  plate       String        @unique
-  trajectories trajectories[]
+  id    Int    @id(map: "Taxi_pkey")
+  plate String @db.VarChar
 }
-
 model trajectories {
-  id        Int      @id @default(autoincrement())
   taxi_id   Int
-  date      DateTime
   latitude  Float
   longitude Float
+  id        Int      @id @default(autoincrement())
+  date      DateTime @db.Timestamp(6)
 
-  taxi      taxis    @relation(fields: [taxi_id], references: [id], onDelete: Cascade)
+taxi taxis @relation(fields:[taxi_id].references: [id], ondelete:Cascade)
+}
+
+model users {
+  id       Int    @id @default(autoincrement()) //indica q es primary key
+  name     String
+  email    String
+  password String
+
 }

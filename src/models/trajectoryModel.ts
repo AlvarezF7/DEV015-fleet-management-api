@@ -11,7 +11,8 @@ export const findAllTrajectories = async (query: any) => {
         where: {
             longitude: longitude ? Number(longitude) : undefined,
             latitude: latitude ? Number(latitude) : undefined,
-            taxi_id: taxi_id ? Number(taxi_id) : undefined,
+            taxi_id: taxi_id ? Number(taxi_id) : undefined,//ojo con taxi_id  o taxiId
+            
             date: {
                 gte: startDate,
                 lte: endDate,
@@ -23,4 +24,11 @@ export const findAllTrajectories = async (query: any) => {
         
     });
    
+};
+export const findTaxiById = async (taxiId: number) => {
+    return await prisma.taxis.findUnique({
+        where: {
+            id: taxiId,
+        },
+    });
 };

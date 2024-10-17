@@ -1,8 +1,9 @@
 //paaqui va lo que inica el server y sus importaciones
-import express, { Application, Request, Response } from 'express';
+import express, { Application } from 'express';
 import { PrismaClient } from '@prisma/client';  //importa prisma para interactuar con BBDD
 import taxiRoutes from './routes/taxis';
 import trajectoryRoutes from './routes/trajectories';
+import userRoutes from './routes/users';
 
 const app: Application = express();
 const prisma = new PrismaClient();
@@ -13,6 +14,7 @@ app.use(express.json());  // para que el servidor entienda las solicitud de dato
 //usar las rutas de ambas tablas
 app.use('/taxis', taxiRoutes);
 app.use('/trajectories', trajectoryRoutes);
+app.use('/users', userRoutes);
 
 
 app.listen(PORT, (): void => { // esto inica el servidor siempre al ultimo

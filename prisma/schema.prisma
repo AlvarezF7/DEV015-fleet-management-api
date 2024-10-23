@@ -10,21 +10,25 @@ datasource db {
 model taxis {
   id    Int    @id(map: "Taxi_pkey")
   plate String @db.VarChar
+  trajectories trajectories[]  //relacion uno a muchos
 }
+
 model trajectories {
+  id        Int      @id @default(autoincrement())
   taxi_id   Int
+  date      DateTime @db.Timestamp(6)
   latitude  Float
   longitude Float
-  id        Int      @id @default(autoincrement())
-  date      DateTime @db.Timestamp(6)
 
-taxi taxis @relation(fields:[taxi_id].references: [id], ondelete:Cascade)
+  taxi      taxis    @relation(fields: [taxi_id], references: [id], onDelete: Cascade)
+ 
+
 }
 
 model users {
   id       Int    @id @default(autoincrement()) //indica q es primary key
   name     String
-  email    String
+  email    String @unique
   password String
 
 }

@@ -1,9 +1,8 @@
 //codigo de la consulta para los taxis
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { GetTaxis } from '../models/taxiModel';
 
-const prisma = new PrismaClient();
+
 
 export const getAllTaxis = async (req: Request, res: Response): Promise<void> => {
     try {

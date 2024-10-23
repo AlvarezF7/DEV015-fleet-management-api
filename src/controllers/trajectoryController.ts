@@ -1,10 +1,7 @@
 //el controlador debe manejar la logica de las solicitudes HTTP y obtener los datos 
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import {findAllTrajectories, findTaxiById} from '../models/trajectoryModel';
 
-
-const prisma = new PrismaClient();
 
 export const getAllTrajectories = async (req: Request, res: Response): Promise<void> => {
     try {
